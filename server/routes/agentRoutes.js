@@ -134,14 +134,23 @@ router.get('/my-profile', protect, requireRole('agent'), async (req, res) => {
     const todaysDeliveries = await Order.countDocuments({
       agent: req.user.id,
       status: 'delivered',
-      updatedAt: { $gte: startOfToday }
+      deliveredAt: { $gte: startOfToday }
     });
+
+    // Calculate Today's Earnings
+    const todaysOrders = await Order.find({
+      agent: req.user.id,
+      status: 'delivered',
+      deliveredAt: { $gte: startOfToday }
+    }, 'price');
+    const todayEarnings = todaysOrders.reduce((sum, o) => sum + (o.price || 0), 0);
 
     const profileObj = profile.toObject();
     profileObj.stats = {
       active: activeDeliveries,
       completed: completedDeliveries,
-      today: todaysDeliveries
+      today: todaysDeliveries,
+      todayEarnings: todayEarnings
     };
 
     res.json(profileObj);

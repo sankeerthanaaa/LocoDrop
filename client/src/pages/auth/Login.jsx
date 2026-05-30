@@ -3,39 +3,60 @@ import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../../api/auth'
 import { useAuth } from '../../context/AuthContext'
 
+const IconDispatch = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="5" cy="18" r="2.5" />
+    <circle cx="19" cy="18" r="2.5" />
+    <path d="M5 18l4.5-6h5.5l3 6M10 12l1.5-4.5h4" />
+    <circle cx="14" cy="3" r="1.2" fill="currentColor" stroke="none" />
+    <path d="M12 7.5L13.5 4h2l2 3.5" />
+    <rect x="7" y="4.5" width="3.5" height="4.5" rx="0.5" fill="currentColor" stroke="none" />
+  </svg>
+)
+
 const DeliveryIllustration = () => (
-  <svg width="260" height="220" viewBox="0 0 260 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="280" height="240" viewBox="0 0 280 240" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Map background */}
-    <rect x="20" y="30" width="220" height="160" rx="16" fill="rgba(255,255,255,0.1)"/>
-    {/* Roads */}
-    <rect x="20" y="100" width="220" height="10" rx="5" fill="rgba(255,255,255,0.15)"/>
-    <rect x="120" y="30" width="10" height="160" rx="5" fill="rgba(255,255,255,0.15)"/>
-    {/* Route dotted line */}
-    <path d="M50 70 L80 70 L80 110 L180 110 L180 160" stroke="white" strokeWidth="2.5" strokeDasharray="6 4" strokeLinecap="round" opacity="0.8"/>
-    {/* Pickup pin */}
-    <circle cx="50" cy="70" r="12" fill="white" opacity="0.9"/>
-    <circle cx="50" cy="70" r="7" fill="#4F6EF7"/>
-    <circle cx="50" cy="70" r="3" fill="white"/>
-    {/* Drop pin */}
-    <circle cx="180" cy="160" r="12" fill="white" opacity="0.9"/>
-    <circle cx="180" cy="160" r="7" fill="#22C55E"/>
-    <circle cx="180" cy="160" r="3" fill="white"/>
-    {/* Scooter */}
-    <circle cx="120" cy="98" r="18" fill="white" opacity="0.95"/>
-    <text x="120" y="105" textAnchor="middle" fontSize="18">🛵</text>
-    <circle cx="120" cy="98" r="24" fill="none" stroke="white" strokeWidth="1.5" opacity="0.3"/>
-    {/* Location tags */}
-    <rect x="28" y="44" width="44" height="18" rx="5" fill="rgba(0,0,0,0.4)"/>
-    <text x="50" y="56" textAnchor="middle" fill="white" fontSize="9" fontFamily="sans-serif">Pickup</text>
-    <rect x="158" y="172" width="44" height="18" rx="5" fill="rgba(0,0,0,0.4)"/>
-    <text x="180" y="184" textAnchor="middle" fill="white" fontSize="9" fontFamily="sans-serif">Drop</text>
-    {/* Speed lines */}
-    <line x1="88" y1="93" x2="76" y2="93" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
-    <line x1="86" y1="99" x2="72" y2="99" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.4"/>
-    <line x1="84" y1="105" x2="74" y2="105" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
-    {/* Package */}
-    <rect x="200" y="50" width="30" height="28" rx="5" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
-    <text x="215" y="68" textAnchor="middle" fontSize="14">📦</text>
+    <rect x="20" y="20" width="240" height="170" rx="14" fill="rgba(205,242,2,0.05)" stroke="rgba(205,242,2,0.15)" strokeWidth="1"/>
+    {/* Grid lines */}
+    <line x1="20" y1="80" x2="260" y2="80" stroke="rgba(135,142,136,0.15)" strokeWidth="1"/>
+    <line x1="20" y1="130" x2="260" y2="130" stroke="rgba(135,142,136,0.15)" strokeWidth="1"/>
+    <line x1="90" y1="20" x2="90" y2="190" stroke="rgba(135,142,136,0.15)" strokeWidth="1"/>
+    <line x1="170" y1="20" x2="170" y2="190" stroke="rgba(135,142,136,0.15)" strokeWidth="1"/>
+    {/* Route path */}
+    <path d="M60 65 L90 65 L90 105 L190 105 L190 160" stroke="#CDF202" strokeWidth="2" strokeLinecap="round" opacity="0.7"/>
+    {/* Pickup marker */}
+    <circle cx="60" cy="65" r="10" fill="rgba(205,242,2,0.2)" stroke="#CDF202" strokeWidth="1.5"/>
+    <circle cx="60" cy="65" r="4" fill="#CDF202"/>
+    {/* Drop marker */}
+    <circle cx="190" cy="160" r="10" fill="rgba(248,113,113,0.2)" stroke="#F87171" strokeWidth="1.5"/>
+    <circle cx="190" cy="160" r="4" fill="#F87171"/>
+    {/* Delivery vehicle (abstract bike delivery man with parcel) */}
+    <g stroke="#CDF202" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      {/* Bike Wheels */}
+      <circle cx="127" cy="112" r="6" fill="#191B1D" stroke="rgba(135,142,136,0.5)" strokeWidth="1.5" />
+      <circle cx="151" cy="112" r="6" fill="#191B1D" stroke="rgba(135,142,136,0.5)" strokeWidth="1.5" />
+      {/* Frame */}
+      <path d="M127 112 L138 112 L135 97 L127 112 M138 112 L146 97 L135 97 M146 97 L151 112" />
+      {/* Handlebars */}
+      <path d="M146 97 L146 91 L149 91" />
+      {/* Rider Torso */}
+      <path d="M135 97 L142 83" />
+      {/* Rider Head */}
+      <circle cx="144" cy="78" r="3" fill="#CDF202" stroke="none" />
+      {/* Rider Arms */}
+      <path d="M142 83 L146 91" />
+      {/* Rider Legs */}
+      <path d="M135 97 L139 104 L138 112" />
+      {/* Parcel Backpack */}
+      <rect x="127" y="81" width="7" height="11" rx="1.5" fill="#242729" stroke="#CDF202" strokeWidth="1.5" />
+    </g>
+    {/* Labels */}
+    <rect x="38" y="46" width="44" height="14" rx="4" fill="#242729" stroke="rgba(205,242,2,0.3)" strokeWidth="1"/>
+    <text x="60" y="56" textAnchor="middle" fill="#CDF202" fontSize="8" fontFamily="system-ui">PICKUP</text>
+    <rect x="170" y="166" width="40" height="14" rx="4" fill="#242729" stroke="rgba(248,113,113,0.3)" strokeWidth="1"/>
+    <text x="190" y="176" textAnchor="middle" fill="#F87171" fontSize="8" fontFamily="system-ui">DROP</text>
+    {/* Stats chips */}
   </svg>
 )
 
@@ -53,11 +74,7 @@ export default function Login() {
     try {
       const res = await loginUser(form)
       login(res.data.user, res.data.token)
-      const dest = {
-        sender: '/sender/dashboard',
-        agent:  '/agent/dashboard',
-        admin:  '/admin/dashboard',
-      }
+      const dest = { sender: '/sender/dashboard', agent: '/agent/dashboard', admin: '/admin/dashboard' }
       navigate(dest[res.data.user.role] || '/')
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials')
@@ -68,48 +85,46 @@ export default function Login() {
 
   return (
     <div className="auth-shell">
-      {/* LEFT PANEL */}
+      {/* LEFT */}
       <div className="auth-left">
         <div className="auth-bg-circle-1" />
         <div className="auth-bg-circle-2" />
         <div className="auth-left-brand">
-          <div className="auth-left-brand-icon">🚀</div>
-          <div className="auth-left-brand-name">DispatchX</div>
+          <div className="auth-left-brand-icon"><IconDispatch /></div>
+          <div className="auth-left-brand-name">LocoDrop</div>
         </div>
         <div className="auth-illustration">
           <DeliveryIllustration />
         </div>
-        <div className="auth-left-tagline">Deliver faster,<br />smarter, together</div>
-        <div className="auth-left-sub">Hyperlocal delivery at your fingertips</div>
+        <div className="auth-left-tagline">Deliver faster,<br /><span>smarter</span>, together</div>
+        <div className="auth-left-sub">Hyperlocal delivery platform built for speed and reliability</div>
       </div>
 
-      {/* RIGHT PANEL */}
+      {/* RIGHT */}
       <div className="auth-right">
         <div className="auth-form-wrap">
-          <div className="auth-form-title">Welcome back 👋</div>
-          <div className="auth-form-sub">Sign in to your DispatchX account</div>
+          <div className="auth-logo">
+            <div className="auth-logo-icon"><IconDispatch /></div>
+            <div className="auth-logo-text">LocoDrop</div>
+          </div>
+          <div className="auth-form-title">Welcome back</div>
+          <div className="auth-form-sub">Sign in to your LocoDrop account to continue</div>
 
           {error && <div className="auth-err">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="auth-field">
               <label>Email address</label>
-              <input
-                type="email" required placeholder="you@example.com"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              />
+              <input type="email" required placeholder="you@example.com"
+                value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
             </div>
             <div className="auth-field">
               <label>Password</label>
-              <input
-                type="password" required placeholder="••••••••"
-                value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-              />
+              <input type="password" required placeholder="••••••••"
+                value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
             </div>
             <div className="auth-row">
-              <label style={{ display:'flex', alignItems:'center', gap:6, cursor:'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
                 <input type="checkbox" /> Remember me
               </label>
               <span className="auth-link">Forgot password?</span>

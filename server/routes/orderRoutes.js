@@ -448,6 +448,25 @@ router.put('/:id/status', protect, requireRole('agent'), validateObjectIdParam('
         message: 'Your order has been delivered',
         orderId: order._id,
       });
+
+      // Emit updated stats to the agent socket room
+      const io = req.app.get('io');
+      if (io) {
+        const activeDeliveries = await Order.countDocuments({ agent: req.user.id, status: { $in: ['accepted', 'picked_up'] } });
+        const completedDeliveries = await Order.countDocuments({ agent: req.user.id, status: 'delivered' });
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const todaysDeliveries = await Order.countDocuments({ agent: req.user.id, status: 'delivered', deliveredAt: { $gte: startOfToday } });
+        const todaysOrders = await Order.find({ agent: req.user.id, status: 'delivered', deliveredAt: { $gte: startOfToday } }, 'price');
+        const todayEarnings = todaysOrders.reduce((sum, o) => sum + (o.price || 0), 0);
+        
+        io.to(`user:${req.user.id}`).emit('agent:stats', {
+          active: activeDeliveries,
+          completed: completedDeliveries,
+          today: todaysDeliveries,
+          todayEarnings: todayEarnings
+        });
+      }
     }
 
     const payload = { 

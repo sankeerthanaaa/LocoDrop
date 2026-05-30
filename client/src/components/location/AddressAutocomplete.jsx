@@ -145,9 +145,9 @@ export default function AddressAutocomplete({
             left: 0,
             right: 0,
             zIndex: 1000,
-            background: 'var(--surface)',
+            background: 'var(--bg-surface)',
             border: '1.5px solid var(--border)',
-            borderRadius: 'var(--r-md)',
+            borderRadius: 'var(--radius-md)',
             boxShadow: 'var(--shadow-md)',
             marginTop: 4,
             padding: 4,
@@ -179,7 +179,7 @@ export default function AddressAutocomplete({
               className={`autocomplete-item ${activeIndex === index ? 'active' : ''}`}
               style={{
                 padding: '8px 12px',
-                borderRadius: 'var(--r-sm)',
+                borderRadius: 'var(--radius-sm)',
                 cursor: 'pointer',
                 fontSize: '12px',
                 background: activeIndex === index ? 'var(--accent-light)' : 'transparent',

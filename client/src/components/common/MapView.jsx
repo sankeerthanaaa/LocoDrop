@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
 
 // CSS style element content for animations
 const pulseStyle = `
-  @keyframes pulse-indigo {
+  @keyframes pulse-brand {
     0% { transform: scale(0.85); opacity: 0.9; }
     70% { transform: scale(1.6); opacity: 0; }
     100% { transform: scale(0.85); opacity: 0; }
@@ -34,8 +34,8 @@ const pulseStyle = `
 const pickupIcon = new L.DivIcon({
   html: `
     <div style="display:flex;align-items:center;justify-content:center;width:24px;height:24px;">
-      <div style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(79,110,247,0.25);animation:pulse-indigo 2s infinite"></div>
-      <div style="position:absolute;width:11px;height:11px;border-radius:50%;background:#4F6EF7;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>
+      <div style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(205,242,2,0.25);animation:pulse-brand 2s infinite"></div>
+      <div style="position:absolute;width:11px;height:11px;border-radius:50%;background:#CDF202;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>
     </div>
   `,
   className: '',
@@ -58,8 +58,8 @@ const dropIcon = new L.DivIcon({
 const agentIcon = new L.DivIcon({
   html: `
     <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;">
-      <div style="position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,0.3);animation:pulse-amber 2s infinite"></div>
-      <div style="position:absolute;width:20px;height:20px;border-radius:50%;background:#F59E0B;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:11px;">🛵</div>
+      <div style="position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(251,209,90,0.3);animation:pulse-amber 2s infinite"></div>
+      <div style="position:absolute;width:20px;height:20px;border-radius:50%;background:#FBD15A;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:11px;">🛵</div>
     </div>
   `,
   className: '',
@@ -200,7 +200,6 @@ const MapView = ({
           textAlign: 'center',
         }}
       >
-        <span style={{ fontSize: 32, marginBottom: 8 }}>🗺️</span>
         <div style={{ fontWeight: '600', color: 'var(--text-2)', fontSize: 13, marginBottom: 4 }}>
           Select an address first
         </div>
@@ -233,7 +232,7 @@ const MapView = ({
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors & CartoDB'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
         {/* Pickup Marker */}
@@ -282,7 +281,7 @@ const MapView = ({
         {deliveryRoute.length >= 2 && (
           <Polyline 
             positions={deliveryRoute} 
-            color="#4F6EF7" 
+            color="#CDF202" 
             weight={4.5} 
             opacity={0.85} 
             lineCap="round"
@@ -294,7 +293,7 @@ const MapView = ({
         {agentRoute.length >= 2 && (
           <Polyline 
             positions={agentRoute} 
-            color="#F59E0B" 
+            color="#FBD15A" 
             weight={4} 
             opacity={0.8} 
             dashArray="8, 6"

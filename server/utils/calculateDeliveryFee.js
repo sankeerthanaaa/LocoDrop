@@ -52,7 +52,7 @@ export function calculateMVPFee(distanceMeters) {
     return 20;
   }
   const distanceKm = distanceMeters / 1000;
-  const fee = 20 + distanceKm * 8;
+  const fee = 20 + distanceKm * 6;
   return Math.round(fee);
 }
 
