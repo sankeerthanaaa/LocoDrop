@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { fetchRoute } from '../../utils/routeService'
@@ -92,49 +92,41 @@ const MapBoundsManager = ({ pickupCoords, dropCoords, agentCoords }) => {
   return null
 }
 
-const MapView = ({ pickupCoords, dropCoords, agentCoords, status }) => {
+const MapView = ({ 
+  pickupCoords, 
+  dropCoords, 
+  agentCoords, 
+  status,
+  pickupDraggable = false,
+  dropDraggable = false,
+  onPickupDragEnd,
+  onDropDragEnd
+}) => {
   const [deliveryRoute, setDeliveryRoute] = useState([])
   const [agentRoute, setAgentRoute] = useState([])
 
-  // If no coordinates are present, display a premium empty state instead of default coordinates
-  if (!pickupCoords && !dropCoords && !agentCoords) {
-    return (
-      <div
-        className="map-empty-state"
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--r-lg)',
-          color: 'var(--text-3)',
-          padding: 24,
-          textAlign: 'center',
-        }}
-      >
-        <span style={{ fontSize: 32, marginBottom: 8 }}>🗺️</span>
-        <div style={{ fontWeight: '600', color: 'var(--text-2)', fontSize: 13, marginBottom: 4 }}>
-          Select an address first
-        </div>
-        <div style={{ fontSize: 11, maxWidth: 220, color: 'var(--text-3)', lineHeight: 1.4 }}>
-          Choose your pickup and drop locations to visualize your route in real-time.
-        </div>
-      </div>
-    )
-  }
+  const pickupRef = useRef(null)
+  const dropRef = useRef(null)
 
-  // Derive center dynamically from available points
-  const defaultCenter = pickupCoords
-    ? [pickupCoords.lat, pickupCoords.lng]
-    : dropCoords
-    ? [dropCoords.lat, dropCoords.lng]
-    : agentCoords
-    ? [agentCoords.lat, agentCoords.lng]
-    : [0, 0]
+  const pickupEventHandlers = useMemo(() => ({
+    dragend() {
+      const marker = pickupRef.current
+      if (marker != null && onPickupDragEnd) {
+        const latLng = marker.getLatLng()
+        onPickupDragEnd({ lat: latLng.lat, lng: latLng.lng })
+      }
+    }
+  }), [onPickupDragEnd])
+
+  const dropEventHandlers = useMemo(() => ({
+    dragend() {
+      const marker = dropRef.current
+      if (marker != null && onDropDragEnd) {
+        const latLng = marker.getLatLng()
+        onDropDragEnd({ lat: latLng.lat, lng: latLng.lng })
+      }
+    }
+  }), [onDropDragEnd])
 
   // Fetch the primary delivery route (Pickup to Drop)
   useEffect(() => {
@@ -188,6 +180,46 @@ const MapView = ({ pickupCoords, dropCoords, agentCoords, status }) => {
     status
   ])
 
+  // If no coordinates are present, display a premium empty state instead of default coordinates
+  if (!pickupCoords && !dropCoords && !agentCoords) {
+    return (
+      <div
+        className="map-empty-state"
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--r-lg)',
+          color: 'var(--text-3)',
+          padding: 24,
+          textAlign: 'center',
+        }}
+      >
+        <span style={{ fontSize: 32, marginBottom: 8 }}>🗺️</span>
+        <div style={{ fontWeight: '600', color: 'var(--text-2)', fontSize: 13, marginBottom: 4 }}>
+          Select an address first
+        </div>
+        <div style={{ fontSize: 11, maxWidth: 220, color: 'var(--text-3)', lineHeight: 1.4 }}>
+          Choose your pickup and drop locations to visualize your route in real-time.
+        </div>
+      </div>
+    )
+  }
+
+  // Derive center dynamically from available points
+  const defaultCenter = pickupCoords
+    ? [pickupCoords.lat, pickupCoords.lng]
+    : dropCoords
+    ? [dropCoords.lat, dropCoords.lng]
+    : agentCoords
+    ? [agentCoords.lat, agentCoords.lng]
+    : [0, 0]
+
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       {/* Dynamic Keyframes Injection */}
@@ -206,18 +238,32 @@ const MapView = ({ pickupCoords, dropCoords, agentCoords, status }) => {
 
         {/* Pickup Marker */}
         {pickupCoords && (
-          <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={pickupIcon}>
+          <Marker 
+            position={[pickupCoords.lat, pickupCoords.lng]} 
+            icon={pickupIcon}
+            draggable={pickupDraggable}
+            eventHandlers={pickupEventHandlers}
+            ref={pickupRef}
+          >
             <Popup>
               <div style={{ fontWeight: '600' }}>📦 Pickup Point</div>
+              {pickupDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)' }}>Drag to adjust location pin</div>}
             </Popup>
           </Marker>
         )}
 
         {/* Drop Marker */}
         {dropCoords && (
-          <Marker position={[dropCoords.lat, dropCoords.lng]} icon={dropIcon}>
+          <Marker 
+            position={[dropCoords.lat, dropCoords.lng]} 
+            icon={dropIcon}
+            draggable={dropDraggable}
+            eventHandlers={dropEventHandlers}
+            ref={dropRef}
+          >
             <Popup>
               <div style={{ fontWeight: '600' }}>🎯 Drop Point</div>
+              {dropDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)' }}>Drag to adjust location pin</div>}
             </Popup>
           </Marker>
         )}

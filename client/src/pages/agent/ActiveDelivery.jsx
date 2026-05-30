@@ -182,6 +182,12 @@ export default function ActiveDelivery() {
                   <div>
                     <div className="route-addr-label">Pickup</div>
                     <div className="route-addr-text">{order.pickupAddress}</div>
+                    {(order.pickupFlatNumber || order.pickupLandmark) && (
+                      <div style={{ fontSize: '11px', color: 'var(--text-2)', marginTop: 4 }}>
+                        {order.pickupFlatNumber && <div style={{ marginBottom: 2 }}>🏢 Flat/House: {order.pickupFlatNumber}</div>}
+                        {order.pickupLandmark && <div>📍 Landmark: {order.pickupLandmark}</div>}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="route-dash" />
@@ -190,10 +196,25 @@ export default function ActiveDelivery() {
                   <div>
                     <div className="route-addr-label">Drop</div>
                     <div className="route-addr-text">{order.dropAddress}</div>
+                    {(order.dropFlatNumber || order.dropLandmark) && (
+                      <div style={{ fontSize: '11px', color: 'var(--text-2)', marginTop: 4 }}>
+                        {order.dropFlatNumber && <div style={{ marginBottom: 2 }}>🏢 Flat/House: {order.dropFlatNumber}</div>}
+                        {order.dropLandmark && <div>📍 Landmark: {order.dropLandmark}</div>}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
+
+            {order.deliveryInstructions && (
+              <div className="detail-section" style={{ background: 'rgba(245, 158, 11, 0.05)', borderRadius: 'var(--r-md)', padding: '10px 12px', border: '1.5px solid var(--border)' }}>
+                <div style={{ fontWeight: '600', color: 'var(--amber-dark)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>📢 Delivery Instructions</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-1)', lineHeight: 1.4 }}>
+                  {order.deliveryInstructions}
+                </div>
+              </div>
+            )}
 
             <div className="detail-section">
               <div className="detail-section-title">Sender</div>

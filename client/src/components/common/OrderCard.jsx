@@ -40,9 +40,6 @@ const OrderCard = ({ order, selected, onClick }) => {
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="oc-price">{formatPrice(order.price)}</span>
-          <div className="oc-actions">
-            <div className="oc-action-btn" title="Call">📞</div>
-          </div>
         </div>
       </div>
     </div>

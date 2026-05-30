@@ -139,11 +139,39 @@ router.post('/', protect, requireRole('sender'), validateRequest([
       }
     }
 
+    if (req.body.pickupFlatNumber && req.body.pickupFlatNumber.length > 100) {
+      errors.push({ field: 'pickupFlatNumber', message: 'Pickup flat number must be 100 characters or less' });
+    }
+    if (req.body.pickupLandmark && req.body.pickupLandmark.length > 150) {
+      errors.push({ field: 'pickupLandmark', message: 'Pickup landmark must be 150 characters or less' });
+    }
+    if (req.body.dropFlatNumber && req.body.dropFlatNumber.length > 100) {
+      errors.push({ field: 'dropFlatNumber', message: 'Drop flat number must be 100 characters or less' });
+    }
+    if (req.body.dropLandmark && req.body.dropLandmark.length > 150) {
+      errors.push({ field: 'dropLandmark', message: 'Drop landmark must be 150 characters or less' });
+    }
+    if (req.body.deliveryInstructions && req.body.deliveryInstructions.length > 300) {
+      errors.push({ field: 'deliveryInstructions', message: 'Delivery instructions must be 300 characters or less' });
+    }
+
     return errors;
   },
 ]), async (req, res) => {
   try {
-    const { pickupAddress, dropAddress, pickupCoords, dropCoords, description, category } = req.body;
+    const { 
+      pickupAddress, 
+      dropAddress, 
+      pickupCoords, 
+      dropCoords, 
+      description, 
+      category,
+      pickupFlatNumber,
+      pickupLandmark,
+      dropFlatNumber,
+      dropLandmark,
+      deliveryInstructions
+    } = req.body;
 
     const isPickupAllowed = isAddressInServiceArea(pickupAddress);
     const isDropAllowed = isAddressInServiceArea(dropAddress);
@@ -174,6 +202,11 @@ router.post('/', protect, requireRole('sender'), validateRequest([
       dropLocation: toGeoPoint(parsedDropCoords),
       description,
       category,
+      pickupFlatNumber: pickupFlatNumber ? pickupFlatNumber.trim() : '',
+      pickupLandmark: pickupLandmark ? pickupLandmark.trim() : '',
+      dropFlatNumber: dropFlatNumber ? dropFlatNumber.trim() : '',
+      dropLandmark: dropLandmark ? dropLandmark.trim() : '',
+      deliveryInstructions: deliveryInstructions ? deliveryInstructions.trim() : '',
       price: pricing.deliveryFee, // Set directly by backend calculator
       statusHistory: [{ status: 'posted', actor: req.user.id }],
     });
@@ -553,7 +586,28 @@ router.put('/:id/rate', protect, requireRole('sender'), validateObjectIdParam('i
       emitToRoom(req, 'admin', 'agent:rating', { agentId: order.agent, rating: averageRating });
     }
 
-    res.json(order);
+    await order.populate('sender', 'name email phone');
+    await order.populate('agent', 'name email phone');
+    
+    const orderObj = order.toObject();
+    
+    if (order.agent) {
+      const profile = await AgentProfile.findOne({ user: order.agent._id });
+      if (profile) {
+        orderObj.agent.profile = {
+          rating: profile.rating,
+          vehicleType: profile.vehicleType,
+          totalDeliveries: profile.totalDeliveries,
+          createdAt: profile.createdAt,
+          isOnline: profile.isOnline,
+        };
+        if (profile.currentLocation) {
+          orderObj.agent.currentLocation = profile.currentLocation;
+        }
+      }
+    }
+
+    res.json(orderObj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

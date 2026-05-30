@@ -56,6 +56,11 @@ const orderSchema = new mongoose.Schema(
     acceptedAt: { type: Date, default: null },
     pickedUpAt: { type: Date, default: null },
     deliveredAt: { type: Date, default: null },
+    pickupFlatNumber: { type: String, default: '' },
+    pickupLandmark: { type: String, default: '' },
+    dropFlatNumber: { type: String, default: '' },
+    dropLandmark: { type: String, default: '' },
+    deliveryInstructions: { type: String, default: '' },
   },
   { timestamps: true }
 );
