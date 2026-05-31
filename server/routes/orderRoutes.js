@@ -154,6 +154,11 @@ router.post('/', protect, requireRole('sender'), validateRequest([
     if (req.body.deliveryInstructions && req.body.deliveryInstructions.length > 300) {
       errors.push({ field: 'deliveryInstructions', message: 'Delivery instructions must be 300 characters or less' });
     }
+    if (!isNonEmptyString(req.body.category)) {
+      errors.push({ field: 'category', message: 'category is required' });
+    } else if (!['Groceries', 'Documents', 'Electronics', 'Food', 'Medicine', 'Other'].includes(req.body.category)) {
+      errors.push({ field: 'category', message: 'category must be one of: Groceries, Documents, Electronics, Food, Medicine, Other' });
+    }
 
     return errors;
   },
@@ -627,6 +632,43 @@ router.put('/:id/rate', protect, requireRole('sender'), validateObjectIdParam('i
     }
 
     res.json(orderObj);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// PUT /api/orders/:id/add-fee (sender)
+router.put('/:id/add-fee', protect, requireRole('sender'), validateObjectIdParam('id'), validateRequest([
+  (req) => {
+    const errors = [];
+    const fee = Number(req.body.fee);
+    if (isNaN(fee) || fee <= 0) {
+      errors.push({ field: 'fee', message: 'Fee must be a positive number' });
+    }
+    return errors;
+  }
+]), async (req, res) => {
+  try {
+    const { fee } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.sender.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Only the sender of this order can add a fee' });
+    }
+    if (order.status !== 'posted') {
+      return res.status(400).json({ message: 'Fees can only be added to pending orders' });
+    }
+
+    order.price += Number(fee);
+    await order.save();
+
+    // Broadcast updated price to agents, admin, and the order's specific room
+    emitToRoom(req, 'agents', 'order:price_updated', { orderId: order._id, price: order.price });
+    emitToRoom(req, 'admin', 'order:price_updated', { orderId: order._id, price: order.price });
+    emitToRoom(req, `order:${order._id}`, 'order:price_updated', { orderId: order._id, price: order.price });
+
+    res.json(order);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

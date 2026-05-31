@@ -1,25 +1,43 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getNotifications, markAllRead } from '../../api/notifications.js';
 import useSocketEvent from '../../hooks/useSocket.js';
+import { useToast } from '../../context/ToastContext.jsx';
+
+const IconBell = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+  </svg>
+)
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
   const ref = useRef(null);
+  const { showToast } = useToast() || {};
 
   // Fetch initial notifications on mount
   useEffect(() => {
     getNotifications()
-      .then(({ data }) => setNotifs(data))
+      .then(({ data }) => {
+        setNotifs(data);
+        const unreadCount = data.filter((n) => !n.isRead).length;
+        if (unreadCount > 0 && showToast) {
+          showToast(`You have ${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}.`, 'info');
+        }
+      })
       .catch((err) => console.error('Failed to load notifications:', err));
-  }, []);
+  }, [showToast]);
 
   // Listen for real-time notification socket broadcasts
   useSocketEvent(
     'notification:new',
     useCallback((notif) => {
       setNotifs((prev) => [notif, ...prev]);
-    }, [])
+      if (showToast) {
+        showToast(notif.message, 'info');
+      }
+    }, [showToast])
   );
 
   // Close dropdown on outside click
@@ -47,8 +65,8 @@ export default function NotificationBell() {
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button className="notif-btn" onClick={() => setOpen((o) => !o)} title="Notifications">
-        🔔
+      <button className="notif-btn" onClick={() => setOpen((o) => !o)} title="Notifications" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <IconBell />
         {unread > 0 && <span className="notif-dot" />}
       </button>
 

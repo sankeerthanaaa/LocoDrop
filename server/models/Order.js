@@ -45,6 +45,12 @@ const orderSchema = new mongoose.Schema(
     pickupLocation: { type: pointSchema, default: null },
     dropLocation:   { type: pointSchema, default: null },
     description:   { type: String, default: '' },
+    category: {
+      type: String,
+      required: true,
+      enum: ['Groceries', 'Documents', 'Electronics', 'Food', 'Medicine', 'Other'],
+      default: 'Other'
+    },
     price:         { type: Number, required: true },
     status: {
       type: String,

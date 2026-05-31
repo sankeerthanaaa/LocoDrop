@@ -5,12 +5,15 @@ import 'leaflet/dist/leaflet.css'
 import App from './App'
 import { AuthProvider } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
+import { ToastProvider } from './context/ToastContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
       <SocketProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </SocketProvider>
     </AuthProvider>
   </React.StrictMode>

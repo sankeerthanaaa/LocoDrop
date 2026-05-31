@@ -59,7 +59,14 @@ const agentIcon = new L.DivIcon({
   html: `
     <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;">
       <div style="position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(251,209,90,0.3);animation:pulse-amber 2s infinite"></div>
-      <div style="position:absolute;width:20px;height:20px;border-radius:50%;background:#FBD15A;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:11px;">🛵</div>
+      <div style="position:absolute;width:20px;height:20px;border-radius:50%;background:#FBD15A;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#191B1D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;">
+          <circle cx="5.5" cy="18" r="2.5" />
+          <circle cx="18.5" cy="18" r="2.5" />
+          <path d="M5.5 18l5-6.5h6l2 6.5" />
+          <path d="M10.5 11.5l1.5-4.5h4" />
+        </svg>
+      </div>
     </div>
   `,
   className: '',
@@ -245,8 +252,13 @@ const MapView = ({
             ref={pickupRef}
           >
             <Popup>
-              <div style={{ fontWeight: '600' }}>📦 Pickup Point</div>
-              {pickupDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)' }}>Drag to adjust location pin</div>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: '600' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" />
+                </svg>
+                Pickup Point
+              </div>
+              {pickupDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>Drag to adjust location pin</div>}
             </Popup>
           </Marker>
         )}
@@ -261,8 +273,13 @@ const MapView = ({
             ref={dropRef}
           >
             <Popup>
-              <div style={{ fontWeight: '600' }}>🎯 Drop Point</div>
-              {dropDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)' }}>Drag to adjust location pin</div>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: '600' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
+                </svg>
+                Drop Point
+              </div>
+              {dropDraggable && <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>Drag to adjust location pin</div>}
             </Popup>
           </Marker>
         )}
@@ -271,8 +288,14 @@ const MapView = ({
         {agentCoords && (
           <Marker position={[agentCoords.lat, agentCoords.lng]} icon={agentIcon}>
             <Popup>
-              <div style={{ fontWeight: '600' }}>🛵 Delivery Rider</div>
-              {status && <div style={{ fontSize: '11px', color: 'var(--text-2)' }}>Status: {status.replace('_', ' ')}</div>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: '600' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FBD15A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <circle cx="5.5" cy="18" r="2.5" /><circle cx="18.5" cy="18" r="2.5" />
+                  <path d="M5.5 18l5-6.5h6l2 6.5" /><path d="M10.5 11.5l1.5-4.5h4" />
+                </svg>
+                Delivery Rider
+              </div>
+              {status && <div style={{ fontSize: '11px', color: 'var(--text-2)', marginTop: 4 }}>Status: {status.replace('_', ' ')}</div>}
             </Popup>
           </Marker>
         )}

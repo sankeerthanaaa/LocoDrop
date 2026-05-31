@@ -114,14 +114,16 @@ export default function AgentProfileView() {
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
           
           {success && (
-            <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--green)', color: 'var(--green)', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
-              ✅ {success}
+            <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--green)', color: 'var(--green)', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, flexShrink: 0 }}><polyline points="20 6 9 17 4 12" /></svg>
+              {success}
             </div>
           )}
 
           {error && (
-            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--red)', color: 'var(--red)', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
-              ❌ {error}
+            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--red)', color: 'var(--red)', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, flexShrink: 0 }}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              {error}
             </div>
           )}
 
@@ -170,7 +172,10 @@ export default function AgentProfileView() {
                 <div style={{ fontSize: '10px', color: 'var(--text-3)', marginTop: '4px' }}>Completed</div>
               </div>
               <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--amber)' }}>⭐ {rating.toFixed(1)}</div>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style={{ color: 'var(--amber)' }}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                  {rating.toFixed(1)}
+                </div>
                 <div style={{ fontSize: '10px', color: 'var(--text-3)', marginTop: '4px' }}>Rating</div>
               </div>
             </div>
@@ -211,8 +216,9 @@ export default function AgentProfileView() {
                     style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-2)', cursor: 'not-allowed', fontSize: '13px' }}
                   />
                   {isEditing && (
-                    <span style={{ fontSize: '10px', color: 'var(--text-3)', marginTop: '4px', display: 'block' }}>
-                      ℹ️ For the MVP, vehicle type is locked to Bike.
+                    <span style={{ fontSize: '10px', color: 'var(--text-3)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                      For the MVP, vehicle type is locked to Bike.
                     </span>
                   )}
                 </div>
@@ -263,9 +269,10 @@ export default function AgentProfileView() {
                       type="button"
                       className="agent-accept-btn"
                       onClick={() => setIsEditing(true)}
-                      style={{ width: 'auto', padding: '8px 16px', margin: 0 }}
+                      style={{ width: 'auto', padding: '8px 16px', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}
                     >
-                      ✏️ Edit Profile
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                      Edit Profile
                     </button>
                   )}
                 </div>

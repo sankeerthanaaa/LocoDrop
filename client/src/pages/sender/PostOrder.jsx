@@ -7,7 +7,7 @@ import MapView from '../../components/common/MapView';
 const DEFAULT = {
   pickupAddress: '', pickupCoords: null, pickupFlatNumber: '', pickupLandmark: '',
   dropAddress: '', dropCoords: null, dropFlatNumber: '', dropLandmark: '',
-  deliveryInstructions: '', description: '', category: 'Groceries',
+  deliveryInstructions: '', description: '', category: '',
 };
 
 // Icons
@@ -92,9 +92,27 @@ export default function PostOrder() {
   }, [form.pickupCoords?.lat, form.pickupCoords?.lng, form.dropCoords?.lat, form.dropCoords?.lng, form.pickupAddress, form.dropAddress]);
 
   const handleSubmit = async () => {
-    if (!form.pickupAddress || !form.dropAddress) { setError('Please fill in all required fields.'); return; }
-    if (!form.pickupCoords) { setError('Select a valid pickup address from suggestions.'); return; }
-    if (!form.dropCoords) { setError('Select a valid drop address from suggestions.'); return; }
+    const missing = [];
+    if (!form.pickupAddress.trim()) {
+      missing.push('pickup address');
+    } else if (!form.pickupCoords) {
+      missing.push('valid pickup coordinates from suggestions');
+    }
+    
+    if (!form.dropAddress.trim()) {
+      missing.push('drop address');
+    } else if (!form.dropCoords) {
+      missing.push('valid drop coordinates from suggestions');
+    }
+
+    if (!form.category) {
+      missing.push('package category');
+    }
+
+    if (missing.length > 0) {
+      setError(`Please provide: ${missing.join(', ')}.`);
+      return;
+    }
     if (estimate && !estimate.serviceAvailable) { setError('Service is not available in these locations yet.'); return; }
     setError('');
     setLoading(true);
@@ -131,6 +149,30 @@ export default function PostOrder() {
         <div className="list-panel" style={{ display: 'flex', flexDirection: 'column', flex: '1 1 480px' }}>
           <div className="form-body" style={{ flex: 1, padding: 20 }}>
             {error && <div className="form-error" style={{ display: 'flex', alignItems: 'center', gap: 7 }}><IconAlertCircle />{error}</div>}
+
+            {/* Helpful info box */}
+            <div style={{
+              background: 'var(--accent-light)',
+              border: '1.5px solid var(--border-brand)',
+              borderRadius: 'var(--radius-md)',
+              padding: '12px 14px',
+              marginBottom: '20px',
+              fontSize: '12px',
+              color: 'var(--text-primary)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: '700', color: 'var(--brand)' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Helpful Tips for precise delivery
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: 4, color: 'var(--text-secondary)' }}>
+                <li><strong>Pickup/Drop location:</strong> Please enter the city name (e.g. Hyderabad) in the address search for accurate coordinates.</li>
+                <li><strong>Adjust map pin:</strong> After selecting an address, drag/pin it on the map on the right to select the exact precise location.</li>
+
+              </ul>
+            </div>
 
             {/* Pickup */}
             <div className="form-section">
@@ -234,11 +276,16 @@ export default function PostOrder() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Category</label>
+                  <label className="form-label">Category <span style={{ color: 'var(--red)' }}>*</span></label>
                   <select className="form-select" value={form.category}
-                    onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                    <option>Groceries</option><option>Documents</option><option>Electronics</option>
-                    <option>Food</option><option>Medicine</option><option>Other</option>
+                    onChange={e => setForm(f => ({ ...f, category: e.target.value }))} required>
+                    <option value="">-- Select Category --</option>
+                    <option value="Groceries">Groceries</option>
+                    <option value="Documents">Documents</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Food">Food</option>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <div className="form-group">

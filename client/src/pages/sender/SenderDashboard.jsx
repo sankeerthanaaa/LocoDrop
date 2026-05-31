@@ -49,6 +49,7 @@ export default function SenderDashboard() {
   const { orders, setOrders, loading } = useSenderOrders();
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState('All');
+  const [currentTab, setCurrentTab] = useState('All');
   const [agentCoords, setAgentCoords] = useState(null);
 
   const nonCancelledOrders = orders.filter(o => o.status !== 'cancelled');
@@ -63,7 +64,17 @@ export default function SenderDashboard() {
 
   useEffect(() => { joinRooms(); }, [joinRooms]);
 
-  const filtered = filter === 'All' ? nonCancelledOrders : nonCancelledOrders.filter(o => o.status === filter);
+  const tabFiltered = orders.filter(o => {
+    if (currentTab === 'Active') {
+      return ['posted', 'accepted', 'picked_up'].includes(o.status);
+    }
+    if (currentTab === 'History') {
+      return ['delivered', 'cancelled'].includes(o.status);
+    }
+    return o.status !== 'cancelled';
+  });
+
+  const filtered = filter === 'All' ? tabFiltered : tabFiltered.filter(o => o.status === filter);
   const selectedOrder = nonCancelledOrders.find(o => o._id === selected);
 
   useEffect(() => {
@@ -100,10 +111,6 @@ export default function SenderDashboard() {
         </div>
         <div className="topbar-actions">
           <NotificationBell />
-          <button className="tb-btn primary" onClick={() => navigate('/sender/post')}
-            style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <IconPlus /> New Order
-          </button>
         </div>
       </div>
 
@@ -111,9 +118,9 @@ export default function SenderDashboard() {
       <div className="content">
         <div className="list-panel">
           <div className="list-tabs">
-            <div className="list-tab active">All Orders</div>
-            <div className="list-tab">Active</div>
-            <div className="list-tab">History</div>
+            <div className={`list-tab ${currentTab === 'All' ? 'active' : ''}`} onClick={() => { setCurrentTab('All'); setFilter('All'); }}>All Orders</div>
+            <div className={`list-tab ${currentTab === 'Active' ? 'active' : ''}`} onClick={() => { setCurrentTab('Active'); setFilter('All'); }}>Active</div>
+            <div className={`list-tab ${currentTab === 'History' ? 'active' : ''}`} onClick={() => { setCurrentTab('History'); setFilter('All'); }}>History</div>
           </div>
           <div className="list-filters">
             {FILTERS.map(f => (

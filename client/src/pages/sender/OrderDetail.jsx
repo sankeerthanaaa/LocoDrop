@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getOrderById, cancelOrder, rateOrder } from '../../api/orders';
+import { getOrderById, cancelOrder, rateOrder, addOrderFee } from '../../api/orders';
 import StatusStepper from '../../components/common/StatusStepper';
 import StatusBadge from '../../components/common/StatusBadge';
 import MapView from '../../components/common/MapView';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import useSocketEvent from '../../hooks/useSocket';
 import { useSocket } from '../../context/SocketContext';
+import { useToast } from '../../context/ToastContext';
 import { formatDateTime, formatPrice, getInitials } from '../../utils/formatters';
 
 // Icons
@@ -45,12 +46,41 @@ export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const socket = useSocket();
+  const { showToast } = useToast() || {};
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [agentCoords, setAgentCoords] = useState(null);
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingSubmitting, setRatingSubmitting] = useState(false);
+  const [addingFee, setAddingFee] = useState(false);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (order?.status !== 'posted') return;
+    const timer = setInterval(() => setNow(Date.now()), 10000);
+    return () => clearInterval(timer);
+  }, [order?.status]);
+
+  useSocketEvent('order:price_updated', useCallback(data => {
+    if (data.orderId === id) {
+      setOrder(prev => prev ? { ...prev, price: data.price } : null);
+    }
+  }, [id]));
+
+  const handleAddFee = async (fee) => {
+    setAddingFee(true);
+    try {
+      const response = await addOrderFee(id, fee);
+      setOrder(prev => prev ? { ...prev, price: response.data.price } : null);
+      if (showToast) showToast(`Successfully added ₹${fee} fee to your order!`, 'success');
+    } catch (err) {
+      console.error(err);
+      if (showToast) showToast(err.response?.data?.message || 'Failed to add fee.', 'error');
+    } finally {
+      setAddingFee(false);
+    }
+  };
 
   useEffect(() => {
     getOrderById(id)
@@ -235,6 +265,39 @@ export default function OrderDetail() {
               <div className="info-row"><span className="info-key">Posted</span><span className="info-val" style={{ fontSize: 11 }}>{formatDateTime(order.createdAt)}</span></div>
             </div>
 
+            {/* Fee escalation prompt */}
+            {order.status === 'posted' && (now - new Date(order.createdAt).getTime()) > 10 * 60 * 1000 && (
+              <div className="detail-section" style={{
+                background: 'rgba(251, 209, 90, 0.05)',
+                border: '1.5px dashed var(--amber)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8
+              }}>
+                <div style={{ fontWeight: 700, color: 'var(--amber)', fontSize: 11, display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Orbitron, sans-serif' }}>
+                  <IconAlertCircle /> No Agents Accepting Yet
+                </div>
+                <p style={{ fontSize: 11, color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
+                  Sorry, nobody is accepting your delivery right now. Try adding a fee to attract nearby agents.
+                </p>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
+                  {[10, 20, 30, 50].map(fee => (
+                    <button
+                      key={fee}
+                      className="tb-btn"
+                      disabled={addingFee}
+                      onClick={() => handleAddFee(fee)}
+                      style={{ padding: '4px 10px', fontSize: 11, background: 'var(--bg-input)', border: '1px solid var(--border)' }}
+                    >
+                      +₹{fee}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {['posted', 'accepted'].includes(order.status) && (
               <button className="cancel-order-btn" onClick={handleCancel}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
@@ -305,9 +368,27 @@ export default function OrderDetail() {
             {/* Grid stats */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               {[
-                { label: 'Rating', val: `⭐ ${(order.agent?.profile?.rating || 5.0).toFixed(1)}`, color: 'var(--amber)' },
+                {
+                  label: 'Rating',
+                  val: (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                      {(order.agent?.profile?.rating || 5.0).toFixed(1)}
+                    </div>
+                  ),
+                  color: 'var(--amber)'
+                },
                 { label: 'Deliveries', val: `${order.agent?.profile?.totalDeliveries || 0} completed`, color: 'var(--green)' },
-                { label: 'Vehicle', val: `🛵 ${order.agent?.profile?.vehicleType || 'Bike'}`, color: 'var(--brand)' },
+                {
+                  label: 'Vehicle',
+                  val: (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="5.5" cy="18" r="2.5" /><circle cx="18.5" cy="18" r="2.5" /><path d="M5.5 18l5-6.5h6l2 6.5" /><path d="M10.5 11.5l1.5-4.5h4" /></svg>
+                      {order.agent?.profile?.vehicleType || 'Bike'}
+                    </div>
+                  ),
+                  color: 'var(--brand)'
+                },
                 { label: 'Task Status', val: order.status.replace('_', ' '), color: 'var(--status-posted-text)', isCapitalize: true }
               ].map(({ label, val, color, isCapitalize }) => (
                 <div key={label} style={{

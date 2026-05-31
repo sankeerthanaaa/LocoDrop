@@ -1190,6 +1190,50 @@ h1, h2, .brand-text, .sidebar-logo-name,
   font-family: "Orbitron", sans-serif;
 }
 
+/* Order Card Progress Bar */
+.oc-progress {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 16px;
+  gap: 0;
+  position: relative;
+  padding: 0 4px;
+}
+.prog-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  transition: all var(--transition-md);
+  flex-shrink: 0;
+  box-shadow: 0 0 4px var(--brand-glow);
+}
+.prog-dot.empty {
+  background: var(--border-strong);
+  box-shadow: none;
+}
+.prog-line {
+  flex: 1;
+  height: 2px;
+  background: var(--brand);
+  transition: all var(--transition-md);
+}
+.prog-line.empty {
+  background: var(--border-strong);
+}
+.prog-truck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  margin: 0 4px;
+  transition: all var(--transition-md);
+  flex-shrink: 0;
+}
+.prog-truck.empty {
+  color: var(--text-tertiary);
+}
+
 /* Order card footer */
 .order-card-footer {
   display: flex;

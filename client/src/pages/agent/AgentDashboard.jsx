@@ -96,6 +96,10 @@ export default function AgentDashboard() {
     setOrders(prev => prev.filter(o => o._id !== data.orderId));
   }, [setOrders]));
 
+  useSocketEvent('order:price_updated', useCallback(data => {
+    setOrders(prev => prev.map(o => o._id === data.orderId ? { ...o, price: data.price } : o));
+  }, [setOrders]));
+
   useSocketEvent('agent:stats', useCallback(stats => {
     setProfile(prev => prev ? { ...prev, stats } : null);
   }, [setProfile]));
@@ -255,12 +259,6 @@ export default function AgentDashboard() {
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
                   >
                     <IconCheck /> Accept Delivery
-                  </button>
-                  <button
-                    className="agent-decline-btn"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                  >
-                    <IconX /> Decline
                   </button>
                 </div>
               ))
