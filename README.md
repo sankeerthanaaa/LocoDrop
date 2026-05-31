@@ -238,18 +238,4 @@ LocoDrop uses WebSockets (Socket.io) for live synchronization across all connect
 
 ---
 
-##  Roadmap
-
-Planned features for future releases:
-
-- [ ] Delivery verification codes (OTP on handoff)
-- [ ] Automated order escalation system
-- [ ] Advanced agent analytics dashboard
-- [ ] Improved address intelligence and autocomplete
-- [ ] Mobile application (iOS & Android)
-- [ ] Push notification support
-- [ ] Expanded multi-city support
-- [ ] Operational reporting and export tools
-
-
 
