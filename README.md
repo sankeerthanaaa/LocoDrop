@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 LocoDrop
+# LocoDrop
 
 ### Hyperlocal Delivery, Simplified.
 
@@ -16,7 +16,7 @@ LocoDrop is a full-stack same-city delivery platform that connects senders with 
 
 ---
 
-## 📋 Table of Contents
+##Table of Contents
 
 - [Overview](#-overview)
 - [Features](#-features)
@@ -31,21 +31,21 @@ LocoDrop is a full-stack same-city delivery platform that connects senders with 
 
 ---
 
-## 🌍 Overview
+## Overview
 
 LocoDrop enables fast, transparent, and reliable same-city package delivery through three distinct user roles:
 
 | Role | Responsibility |
 |------|---------------|
-| 🧍 **Sender** | Creates delivery requests and tracks packages in real time |
-| 🛵 **Agent** | Accepts and completes deliveries with live location sharing |
-| 🛡️ **Administrator** | Monitors platform activity, agents, and delivery outcomes |
+|  **Sender** | Creates delivery requests and tracks packages in real time |
+|  **Agent** | Accepts and completes deliveries with live location sharing |
+|  **Administrator** | Monitors platform activity, agents, and delivery outcomes |
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🧍 Sender
+###  Sender
 - **Order Creation** — Specify pickup, drop, package category, receiver details, and delivery instructions
 - **Automatic Pricing** — Delivery charges calculated from route distance, no manual input needed
 - **Real-Time Tracking** — Live map view with agent location, route, and order status
@@ -53,13 +53,13 @@ LocoDrop enables fast, transparent, and reliable same-city package delivery thro
 - **Delivery History** — Full record of past deliveries with durations, agents, and charges
 - **Ratings & Feedback** — Rate delivery agents after successful completions
 
-### 🛵 Agent
+###  Agent
 - **Availability Toggle** — Switch between Online / Offline to control delivery visibility
 - **Order Management** — Browse available orders, accept deliveries, and update statuses
 - **Live Location Sharing** — Continuous location updates for sender tracking
 - **Dashboard** — View active/completed deliveries, daily earnings, and performance stats
 
-### 🛡️ Administrator
+###  Administrator
 - **Platform Monitoring** — Full visibility into active, pending, and completed deliveries
 - **Agent Management** — View profiles, availability, ratings, and delivery history
 - **Delivery Oversight** — Track pickup/drop locations, timelines, agents, and outcomes
@@ -67,7 +67,7 @@ LocoDrop enables fast, transparent, and reliable same-city package delivery thro
 
 ---
 
-## 🔄 Delivery Lifecycle
+##  Delivery Lifecycle
 
 ```
 1. ORDER CREATED       → Sender submits pickup & drop details
@@ -87,20 +87,20 @@ LocoDrop enables fast, transparent, and reliable same-city package delivery thro
 
 ---
 
-## 💰 Pricing Model
+##  Pricing Model
 
 LocoDrop uses a simple distance-based pricing model:
 
 | Distance | Charge |
 |----------|--------|
 | Up to 800m | ₹20 flat fee |
-| Beyond 800m | ₹20 + ₹8 per km |
+| Beyond 800m | ₹20 + ₹6 per km |
 
 > Pricing is calculated automatically from route distance — senders never enter charges manually.
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -128,7 +128,7 @@ LocoDrop uses a simple distance-based pricing model:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 LocoDrop/
@@ -157,7 +157,7 @@ LocoDrop/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -212,7 +212,7 @@ The app will be available at `http://localhost:5173`
 
 ---
 
-## ⚡ Real-Time Events
+##  Real-Time Events
 
 LocoDrop uses WebSockets (Socket.io) for live synchronization across all connected users:
 
@@ -228,7 +228,7 @@ LocoDrop uses WebSockets (Socket.io) for live synchronization across all connect
 
 ---
 
-## 🔒 Security
+##  Security
 
 - **JWT Authentication** — Stateless token-based auth with protected routes
 - **Role-Based Access Control** — Senders, agents, and admins each access only their permitted features
@@ -237,19 +237,5 @@ LocoDrop uses WebSockets (Socket.io) for live synchronization across all connect
 - **Server-Side Logic** — Sensitive operations handled on the backend to prevent client-side manipulation
 
 ---
-
-## 🗺️ Roadmap
-
-Planned features for future releases:
-
-- [ ] Delivery verification codes (OTP on handoff)
-- [ ] Automated order escalation system
-- [ ] Advanced agent analytics dashboard
-- [ ] Improved address intelligence and autocomplete
-- [ ] Mobile application (iOS & Android)
-- [ ] Push notification support
-- [ ] Expanded multi-city support
-- [ ] Operational reporting and export tools
-
 
 
