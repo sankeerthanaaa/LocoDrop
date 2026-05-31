@@ -94,7 +94,7 @@ LocoDrop uses a simple distance-based pricing model:
 | Distance | Charge |
 |----------|--------|
 | Up to 800m | ₹20 flat fee |
-| Beyond 800m | ₹20 + ₹8 per km |
+| Beyond 800m | ₹20 + ₹6 per km |
 
 > Pricing is calculated automatically from route distance — senders never enter charges manually.
 
