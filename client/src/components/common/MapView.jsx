@@ -239,7 +239,7 @@ const MapView = ({
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors & CartoDB'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_4jg9_1_21fd1908ec97d5e8f8d6129f"
         />
 
         {/* Pickup Marker */}
